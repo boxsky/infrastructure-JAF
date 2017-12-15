@@ -1,0 +1,12 @@
+.DS_Store
+.DS_Store?
+._*
+.idea/
+*.sublime-workspace
+*.sublime-project
+/nbproject/
+.buildpath
+.project
+.settings/
+*.swp
+vendor
