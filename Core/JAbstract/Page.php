@@ -1,20 +1,10 @@
 <?php
-namespace JAF\Core;
+namespace JAF\Core\JAbstract;
 
-use JAF\Core\JInterface\Page;
+use JAF\Core\JInterface\Page as PageInterface;
 
-abstract class Component implements Page {
+abstract class Page implements PageInterface {
     private $assigned_data = [];
-
-    final public function get_title() {
-        return '';
-    }
-
-    final public function get_layout() {
-        return '';
-    }
-
-    abstract function get_view();
 
     public function get_styles() {
         return [];
@@ -32,7 +22,7 @@ abstract class Component implements Page {
         return [];
     }
 
-    final function get_components() {
+    public function get_components() {
         return [];
     }
 
