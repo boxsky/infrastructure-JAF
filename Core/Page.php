@@ -24,6 +24,15 @@ class Page {
          */
         $page_class_name = 'App\\'.$this->get_type().'\\'.$this->get_page_name().$this->get_type();
         $page_class = new $page_class_name();
+
+        /**
+         * 传值给Page
+         */
+        if ($this->get_data()) {
+            foreach ($this->get_data() as $k => $v) {
+                $page_class->set_assigned_data($k, $v);
+            }
+        }
         $this->set_page_class($page_class);
 
         /**
@@ -54,8 +63,9 @@ class Page {
         /**
          * 设置视图数据
          */
-        if ($this->get_data()) {
-            foreach ($this->get_data() as $k => $v) {
+        $page_data = $this->get_page_class()->get_assigned_data();
+        if ($page_data) {
+            foreach ($page_data as $k => $v) {
                 ${$k} = $v;
             }
         }

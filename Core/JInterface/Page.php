@@ -17,4 +17,6 @@ interface Page {
     function get_compressed_javascripts();
 
     function get_components();
+
+    function get_assigned_data();
 }
