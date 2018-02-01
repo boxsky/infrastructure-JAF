@@ -212,6 +212,21 @@ class Orm extends TestCase {
         $this->assertEquals($obj, $data);
     }
 
+    public function testWriteUpdateWithLock() {
+        $data = TestWrite::findByPk(1);
+
+        $obj = clone($data);
+        $obj->a = $data->a;
+        $obj->b = $data->b.'1';
+        $obj->c = $data->c + 1;
+        $obj->d = $data->d;
+        $res = $obj->saveWithLock(['d'=>'dddd']);
+        $this->assertEquals($res, 0);
+
+        $dataNew = TestWrite::findByPk(1);
+        $this->assertEquals($data, $dataNew);
+    }
+
     public function testWriteDelete() {
         $obj = new TestWrite();
         $obj->a = 1;

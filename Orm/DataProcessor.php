@@ -132,6 +132,17 @@ class DataProcessor {
         }
     }
 
+    public function updateWithLock($obj, $locks) {
+        $pk_column = $this->pk_column;
+        if (isset($obj->isLoaded) && $obj->isLoaded && !is_null($obj->$pk_column)) {
+            $pk_id = $obj->$pk_column;
+            $obj_arr = (array)$obj;
+            unset($obj_arr['isLoaded']);
+            unset($obj_arr[$pk_column]);
+            return $this->update_by_pk(array_keys($obj_arr), array_values($obj_arr), $pk_id, $locks);
+        }
+    }
+
     private function insert($fields, $values) {
         $write_or_not = true;
         $fields_str = "`".implode("`,`", $fields)."`";
@@ -141,11 +152,20 @@ class DataProcessor {
         return $this->execute_sql($this->sql, $this->params, $write_or_not);
     }
 
-    private function update_by_pk($fields, $values, $pk_id) {
+    private function update_by_pk($fields, $values, $pk_id, $locks=[]) {
         $write_or_not = true;
         $update_str = '`'.implode('`=?,`', $fields).'`=?';
         $this->sql = "UPDATE `{$this->table}` SET {$update_str} WHERE {$this->pk_column}=?";
-        $this->params = array_merge($values,[$pk_id]);
+        $lock_values = [];
+        if (!empty($locks)) {
+            $lock_fields_sql = '';
+            foreach ($locks as $lock_field => $lock_value) {
+                $lock_fields_sql .= " AND {$lock_field}=?";
+                $lock_values[] = $lock_value;
+            }
+            $this->sql .= $lock_fields_sql;
+        }
+        $this->params = array_merge($values,[$pk_id], $lock_values);
         return $this->execute_sql($this->sql, $this->params, $write_or_not);
     }
 

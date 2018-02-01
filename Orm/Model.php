@@ -75,6 +75,15 @@ abstract class Model implements ModelInterface {
         return $res;
     }
 
+    public function saveWithLock($locks) {
+        if (is_null(self::$data_processor)) {
+            self::$data_processor = new DataProcessor(get_called_class());
+        }
+        $res = self::$data_processor->updateWithLock($this, $locks);
+        self::clearDataProcessor();
+        return $res;
+    }
+
     public function delete() {
         if (is_null(self::$data_processor)) {
             self::$data_processor = new DataProcessor(get_called_class());
