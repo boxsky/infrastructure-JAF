@@ -69,7 +69,7 @@ class Page {
                 ${$k} = $v;
             }
         }
-        require_once ROOT_PATH.'resource/'.lcfirst($type).'/'.$real_page.'.phtml';
+        include ROOT_PATH.'resource/'.lcfirst($type).'/'.$real_page.'.phtml';
     }
 
     private function set_page_name($page_name) {
