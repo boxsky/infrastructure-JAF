@@ -170,3 +170,9 @@ function format_error_log_fpm($err_type, $err_file, $err_line, $err_msg) {
     $log_msg .= " msg: " . $err_msg . "\n";
     return $log_msg;
 }
+
+function redirect($url, $permanent = false)
+{
+    header("Location: $url", true, $permanent ? 301 : 302);
+    exit;
+}

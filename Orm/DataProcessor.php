@@ -271,7 +271,7 @@ class DataProcessor {
         $this->force_master = true;
     }
 
-    private function execute_sql($sql, $params=null, $writable=false) {
+    public function execute_sql($sql, $params=null, $writable=false) {
         $type = $this->get_type($sql);
 
         if (!in_array($type, array('SELECT', 'DESC'))) $writable = true;

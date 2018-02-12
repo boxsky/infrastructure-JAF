@@ -54,6 +54,22 @@ class Redis extends \Redis {
         return parent::del($this->rebuild_key($key));
     }
 
+    public function incr($key) {
+        return parent::incr($this->rebuild_key($key));
+    }
+
+    public function decr($key) {
+        return parent::decr($this->rebuild_key($key));
+    }
+
+    public function setTime($key, $timeout) {
+        return parent::expire($this->rebuild_key($key), $timeout);
+    }
+
+    public function getTime($key) {
+        return parent::ttl($this->rebuild_key($key));
+    }
+
     private function rebuild_key($key) {
         return $this->key_prefix.$key;
     }
