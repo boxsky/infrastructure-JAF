@@ -43,11 +43,15 @@ class Redis extends \Redis {
 
     public function set($key, $value, $timeout=null) {
         $timeout = !empty($timeout) ? $timeout : $this->timeout;
-        return parent::set($this->rebuild_key($key), $value, $timeout);
+        return parent::set($this->rebuild_key($key), $this->rebuild_value($value), $timeout);
+    }
+
+    public function setex($key, $ttl, $value) {
+        return parent::setex($this->rebuild_key($key), $ttl, $this->rebuild_value($value));
     }
 
     public function get($key) {
-        return parent::get($this->rebuild_key($key));
+        return $this->format_value(parent::get($this->rebuild_key($key)));
     }
 
     public function del($key) {
@@ -72,5 +76,13 @@ class Redis extends \Redis {
 
     private function rebuild_key($key) {
         return $this->key_prefix.$key;
+    }
+
+    private function rebuild_value($value) {
+        return serialize($value);
+    }
+
+    private function format_value($value) {
+        return unserialize($value);
     }
 }
