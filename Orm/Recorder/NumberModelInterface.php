@@ -8,7 +8,7 @@ interface NumberModelInterface {
 
     static function get_table_name();
 
-    function record();
+    function replace();
 
 
 }

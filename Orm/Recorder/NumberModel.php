@@ -13,12 +13,19 @@ abstract class NumberModel implements NumberModelInterface {
         return static::$instance;
     }
 
-    public function record() {
+    public function replace() {
         if (is_null(self::$data_processor)) {
             self::$data_processor = new DataProcessor(get_called_class());
         }
         $obj_arr = (array)$this;
-        $res = self::$data_processor->replace(array_keys($obj_arr), array_values($obj_arr));
+
+        $write_or_not = true;
+        $fields_str = "`".implode("`,`", array_keys($obj_arr))."`";
+        $values_str = str_repeat('?,', count( array_values($obj_arr)) - 1).'?';
+        $params = array_values($obj_arr);
+
+        $sql = "REPLACE INTO `{$this::get_table_name()}` ({$fields_str}) VALUES ({$values_str})";
+        $res = self::$data_processor->execute_sql($sql, $params, $write_or_not);
         self::clearDataProcessor();
         return $res;
     }
