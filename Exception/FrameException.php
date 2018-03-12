@@ -28,6 +28,12 @@ class FrameException extends \Exception {
     const ENUM_REDIS_CONFIG_ERR        = 100302;
     const ENUM_REDIS_AUTH_FAIL         = 100303;
 
+    /**
+     * service异常
+     */
+    const ENUM_SERVICE_CONFIG_ERR      = 100401;
+    const ENUM_SERVICE_API_NOT_EXIST   = 100402;
+
     public function __construct($code, $detail_info='') {
         $enum_code_msg_mappings = self::get_enum_code_msg_mappings();
         $msg = isset($enum_code_msg_mappings[$code]) ? $enum_code_msg_mappings[$code] : self::DEFAULT_CODE_MSG;
@@ -42,7 +48,12 @@ class FrameException extends \Exception {
             self::ENUM_JCONFIG_NAME_NOT_EXIST  => 'jconfig name not exist!',
             self::ENUM_USE_YAC_BUT_YAC_DISABLE => 'use yac but yac disable!',
             self::ENUM_DB_CONFIG_ERR           => 'db config error!',
-            self::ENUM_DB_EXEC_ERR             => 'db exec error!'
+            self::ENUM_DB_EXEC_ERR             => 'db exec error!',
+            self::ENUM_REDIS_CONNECT_ERR       => 'redis connect error!',
+            self::ENUM_REDIS_CONFIG_ERR        => 'redis config error!',
+            self::ENUM_REDIS_AUTH_FAIL         => 'redis auth fail!',
+            self::ENUM_SERVICE_CONFIG_ERR      => 'service config error!',
+            self::ENUM_SERVICE_API_NOT_EXIST   => 'service api not exist!'
         );
     }
 }
