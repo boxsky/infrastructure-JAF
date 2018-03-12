@@ -12,7 +12,7 @@ class Redis extends \Redis {
 
     public function __construct($name, $connect_mode=self::ENUM_CONNECT_MODE_REQUEST) {
         parent::__construct();
-        $this->key_prefix = 'JAF::'.APP_NAME.'::';
+        $this->key_prefix = 'JAF:'.APP_NAME.':';
         $redis_config = jconfig($name, 'redis');
         if (empty($redis_config['host']) || empty($redis_config['port'])) {
             throw new FrameException(FrameException::ENUM_REDIS_CONFIG_ERR);
