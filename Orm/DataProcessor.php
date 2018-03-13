@@ -283,38 +283,40 @@ class DataProcessor {
         $pdo_name = $this->get_pdo_name($writable);
         $pdo = $pdo_manager->get_pdo($pdo_name);
         $stmt = $pdo->prepare($sql);
-        $result = false;
+
         try {
             $result = $stmt->execute((array)$params);
         } catch (\PDOException $e) {
-            //todo errorlog
             //处理在job中长时间断开的问题，并且只重新连接一次
             if ($tryCount===0 && (preg_match("#".'MySQL server has gone away'."#", $e->getMessage()) || $e->getMessage()=='MySQL server has gone away')) {
                 $tryCount++;
                 $pdo_manager->close_pdo($pdo_name);
                 goto executeStart;
+            } else {
+                throw $e;
             }
         }
 
         switch($type) {
-            case 'INSERT' :
-            case 'REPLACE' :
+            case 'INSERT':
+            case 'REPLACE':
                 $result = $pdo->lastInsertId();
                 if (!$result) {
                     $result = $stmt->rowCount();
                 }
                 break;
 
-            case 'UPDATE' :
-            case 'DELETE' :
+            case 'UPDATE':
+            case 'DELETE':
                 $result = $stmt->rowCount();
                 break;
 
-            case 'SELECT' :
-            case 'DESC' :
+            case 'SELECT':
+            case 'DESC':
                 $result = $stmt->fetchAll();
                 break;
-            default :
+            default:
+                $result = false;
                 break;
         }
 
