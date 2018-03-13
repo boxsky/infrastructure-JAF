@@ -18,19 +18,17 @@ class JAFCustomLogger {
         \Logger::configure($config);
     }
 
-    public function error($msg) {
-        if (!isset($this->loggers['errorLogger'])) {
-            $this->loggers['errorLogger'] = \Logger::getLogger('errorLogger');
+    public function error($msg, $logger='errorLogger') {
+        if (!isset($this->loggers[$logger])) {
+            $this->loggers[$logger] = \Logger::getLogger($logger);
         }
-        $log = $this->loggers['errorLogger'];
-        $log->error($msg);
+        $this->loggers[$logger]->error($msg);
     }
 
-    public function warn($msg) {
-        if (!isset($this->loggers['warningLogger'])) {
-            $this->loggers['warningLogger'] = \Logger::getLogger('warningLogger');
+    public function warn($msg, $logger='warningLogger') {
+        if (!isset($this->loggers[$logger])) {
+            $this->loggers[$logger] = \Logger::getLogger($logger);
         }
-        $log = $this->loggers['warningLogger'];
-        $log->warn($msg);
+        $this->loggers[$logger]->warn($msg);
     }
 }

@@ -124,7 +124,8 @@ function jaf_warning_handler($err_type, $err_msg, $err_file, $err_line) {
 
     $logger = \JAF\Log\JAFCustomLogger::get_instance();
     $log_msg = format_error_log(php_sapi_name(), $err_type, $err_file, $err_line, $err_msg);
-    $logger->warn($log_msg);
+    $logger->warn(json_encode($log_msg));
+    $logger->warn(format_error_log_from_arr_to_line($log_msg), 'warningLoggerFormat');
 }
 
 function jaf_fatal_handler() {
@@ -134,7 +135,8 @@ function jaf_fatal_handler() {
     if (!is_null($error_info)) {
         $logger = \JAF\Log\JAFCustomLogger::get_instance();
         $log_msg = format_error_log(php_sapi_name(), $error_info['type'], $error_info['file'], $error_info['line'], $error_info['message']);
-        $logger->error($log_msg);
+        $logger->error(json_encode($log_msg));
+        $logger->error(format_error_log_from_arr_to_line($log_msg), 'errorLoggerFormat');
     }
 }
 
@@ -145,34 +147,41 @@ function format_error_log($sapi, $err_type, $err_file, $err_line, $err_msg) {
 
 function format_error_log_cli($err_type, $err_file, $err_line, $err_msg) {
     global $argv;
-    $log_msg = " app: " . APP_NAME . "\n";
-    $log_msg .= "from: " . "cli\n";
-    $log_msg .= "type: " . friendly_error_type($err_type) . "\n";
-    $log_msg .= "file: " . $err_file . "\n";
-    $log_msg .= "line: " . $err_line . "\n";
-    $log_msg .= "argv: " . json_encode($argv) . "\n";
-    $log_msg .= "time: " . date('Y-m-d H:i:s') . "\n";
-    $log_msg .= "uniq: " . gethostname() . "-" . getmypid() . "-" . str_replace('.', '', microtime(true)) . "\n";
-    $log_msg .= " msg: " . $err_msg . "\n";
+    $log_msg['app'] = APP_NAME;
+    $log_msg['from'] = 'cli';
+    $log_msg['type'] = friendly_error_type($err_type);
+    $log_msg['file'] = $err_file;
+    $log_msg['line'] = $err_line;
+    $log_msg['argv'] = json_encode($argv);
+    $log_msg['time'] = date('Y-m-d H:i:s');
+    $log_msg['uniq'] = gethostname() . "-" . getmypid() . "-" . str_replace('.', '', microtime(true));
+    $log_msg['msg'] = $err_msg;
     return $log_msg;
 }
 
 function format_error_log_fpm($err_type, $err_file, $err_line, $err_msg) {
-    $log_msg = " app: " . APP_NAME . "\n";
-    $log_msg .= "from: " . "fpm\n";
-    $log_msg .= "type: " . friendly_error_type($err_type) . "\n";
-    $log_msg .= "host: " . $_SERVER['SERVER_NAME'] . "\n";
-    $log_msg .= " uri: " . $_SERVER['REQUEST_URI'] . "\n";
-    $log_msg .= "file: " . $err_file . "\n";
-    $log_msg .= "line: " . $err_line . "\n";
-    $log_msg .= "time: " . date('Y-m-d H:i:s') . "\n";
-    $log_msg .= "uniq: " . gethostname() . "-" . getmypid() . "-" . str_replace('.', '', microtime(true)) . "\n";
-    $log_msg .= " msg: " . $err_msg . "\n";
+    $log_msg['app'] = APP_NAME;
+    $log_msg['from'] = 'fpm';
+    $log_msg['type'] = friendly_error_type($err_type);
+    $log_msg['host'] = $_SERVER['SERVER_NAME'];
+    $log_msg['uri'] = $_SERVER['REQUEST_URI'];
+    $log_msg['file'] = $err_file;
+    $log_msg['line'] = $err_line;
+    $log_msg['time'] = date('Y-m-d H:i:s');
+    $log_msg['uniq'] = gethostname() . "-" . getmypid() . "-" . str_replace('.', '', microtime(true));
+    $log_msg['msg'] = $err_msg;
     return $log_msg;
 }
 
-function redirect($url, $permanent = false)
-{
+function format_error_log_from_arr_to_line($msg) {
+    $line = '';
+    foreach ($msg as $k => $v) {
+        $line .= str_pad($k, 4, ' ', STR_PAD_LEFT) . ': ' . $v . "\n";
+    }
+    return $line;
+}
+
+function redirect($url, $permanent=false) {
     header("Location: $url", true, $permanent ? 301 : 302);
     exit;
 }
