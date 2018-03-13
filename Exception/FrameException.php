@@ -34,6 +34,11 @@ class FrameException extends \Exception {
     const ENUM_SERVICE_CONFIG_ERR      = 100401;
     const ENUM_SERVICE_API_NOT_EXIST   = 100402;
 
+    /**
+     * bll异常
+     */
+    const ENUM_BLL_NOT_EXIST           = 100501;
+
     public function __construct($code, $detail_info='') {
         $enum_code_msg_mappings = self::get_enum_code_msg_mappings();
         $msg = isset($enum_code_msg_mappings[$code]) ? $enum_code_msg_mappings[$code] : self::DEFAULT_CODE_MSG;
@@ -53,7 +58,8 @@ class FrameException extends \Exception {
             self::ENUM_REDIS_CONFIG_ERR        => 'redis config error!',
             self::ENUM_REDIS_AUTH_FAIL         => 'redis auth fail!',
             self::ENUM_SERVICE_CONFIG_ERR      => 'service config error!',
-            self::ENUM_SERVICE_API_NOT_EXIST   => 'service api not exist!'
+            self::ENUM_SERVICE_API_NOT_EXIST   => 'service api not exist!',
+            self::ENUM_BLL_NOT_EXIST           => 'bll not exist!'
         );
     }
 }
