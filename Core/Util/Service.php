@@ -12,7 +12,7 @@ class Service {
         $api_config = $service_config['apis'][$api_name];
 
         //url
-        $uri = $api_config['url'];
+        $uri = $api_config['url'] ?? '/'.str_replace(':', '/', $api_name);
         $url = 'http://'.$domain.$uri;
 
         //method
