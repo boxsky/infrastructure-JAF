@@ -32,6 +32,9 @@ final class APP {
         $request = new Request();
         $this->set_request($request);
 
+        $response = new Response();
+        $this->set_response($response);
+
         $router = new Router();
         $this->set_router($router);
     }
