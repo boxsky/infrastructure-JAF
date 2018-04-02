@@ -120,17 +120,17 @@ function friendly_error_type($error_type) {
 }
 
 function jaf_warning_handler($err_type, $err_msg, $err_file, $err_line) {
-    //todo custom user triggered error by level
-
     $logger = \JAF\Log\JAFCustomLogger::get_instance();
     $log_msg = format_error_log(php_sapi_name(), $err_type, $err_file, $err_line, $err_msg);
     $logger->warn(json_encode($log_msg));
     $logger->warn(format_error_log_from_arr_to_line($log_msg), 'warningLoggerFormat');
+    //todo custom user triggered error by level
+    if ($err_type == E_USER_ERROR) {
+        exit;
+    }
 }
 
 function jaf_fatal_handler() {
-    //todo error page
-
     $error_info = error_get_last();
     if (!is_null($error_info)) {
         $logger = \JAF\Log\JAFCustomLogger::get_instance();
@@ -138,6 +138,7 @@ function jaf_fatal_handler() {
         $logger->error(json_encode($log_msg));
         $logger->error(format_error_log_from_arr_to_line($log_msg), 'errorLoggerFormat');
     }
+    //todo error page
 }
 
 function format_error_log($sapi, $err_type, $err_file, $err_line, $err_msg) {

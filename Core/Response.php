@@ -2,6 +2,14 @@
 namespace JAF\Core;
 
 class Response {
+    protected static $instance;
+    public static function get_instance() {
+        if(!self::$instance instanceof static) {
+            self::$instance = new static();
+        }
+        return static::$instance;
+    }
+
     public function set_cookie($name, $value, $expire=0, $path=null, $domain=null, $secure=false, $httponly=false) {
         return setcookie($name, $value, $expire ? time() + intval($expire) : 0, $path, $domain, $secure, $httponly);
     }
