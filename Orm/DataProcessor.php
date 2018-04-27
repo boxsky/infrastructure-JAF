@@ -220,9 +220,14 @@ class DataProcessor {
                 $this->sql_where .= "({$filter_name}) AND ";
                 $value = is_array($filter_value) ? $filter_value : [$filter_value];
             } else {
-                if ($filter_op == self::FILTER_OP_IN && is_array($filter_value)){
-                    $this->sql_where .= "`{$filter_name}` {$filter_op} (". str_repeat('?,', count($filter_value) - 1). "?) AND ";
-                    $value = $filter_value;
+                if ($filter_op == self::FILTER_OP_IN && is_array($filter_value)) {
+                    if (is_array($filter_value) && !empty($filter_value)) {
+                        $this->sql_where .= "`{$filter_name}` {$filter_op} (". str_repeat('?,', count($filter_value) - 1). "?) AND ";
+                        $value = $filter_value;
+                    } else {
+                        $this->sql_where .= "1=0 AND ";
+                        $value = [];
+                    }
                 } else {
                     $this->sql_where .= "`{$filter_name}` {$filter_op} ? AND ";
                     $value = is_array($filter_value) ? $filter_value : [$filter_value];

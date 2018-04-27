@@ -137,7 +137,7 @@ class Page {
         $res = [];
         if (!is_null($function)) {
             $page = $this->get_page_class();
-            $resources = call_user_func([$page, $function]);
+            $resources = [];
             $components = $page->get_components();
             if ($components) {
                 foreach ($components as $component) {
@@ -147,6 +147,9 @@ class Page {
                     $resources = array_merge($resources, $component_resources);
                 }
             }
+            $page_resources = call_user_func([$page, $function]);
+            $resources = array_merge($resources, $page_resources);
+
             $res = $this->get_compressed_resource_uris($resources, '.'.$ext);
         }
         return $res;
