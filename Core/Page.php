@@ -6,16 +6,16 @@ class Page {
     private $data;
     private $type;
     private $title;
-
     private $page_class;
-
     private $cdn_prefix;
+    private $default_version;
 
     public function __construct($page_name, $data, $type='Page') {
         $this->set_page_name($page_name);
         $this->set_data($data);
         $this->set_type($type);
         $this->set_cdn_prefix();
+        $this->set_default_version();
     }
 
     public function render() {
@@ -173,7 +173,7 @@ class Page {
             if (preg_match('/:\/\//', $resource) || preg_match("#^//#", $resource)) {
                 return $resource;
             } else {
-                return $this->get_cdn_prefix().'dist/'.$this->build_uri($resource);
+                return $this->get_cdn_prefix().'dist/'.$this->build_uri($resource)."?v={$this->get_default_version()}";
             }
         }, $resources);
     }
@@ -181,7 +181,7 @@ class Page {
     private function get_compressed_resource_uris($resources, $ext) {
         $type = str_replace('.', '', $ext);
         if (ENV == 'production') {
-            return [$this->get_cdn_prefix().$this->build_uri($this->transform_page_name_to_file($this->get_page_name(), $ext, $type), 'c')];
+            return [$this->get_cdn_prefix().$this->build_uri($this->transform_page_name_to_file($this->get_page_name(), $ext, $type), 'c')."?v={$this->get_default_version()}"];
         } else {
             return array_map(function($resource) use($type) {
                 return $this->get_cdn_prefix().'source/'.$type.'/'.$this->build_uri($resource);
@@ -211,5 +211,13 @@ class Page {
 
     private function get_cdn_prefix() {
         return $this->cdn_prefix;
+    }
+
+    private function set_default_version() {
+        $this->default_version = defined('VERSION') ? VERSION : time();
+    }
+
+    private function get_default_version() {
+        return $this->default_version;
     }
 }
