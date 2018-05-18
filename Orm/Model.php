@@ -4,6 +4,9 @@ namespace JAF\Orm;
 abstract class Model implements ModelInterface {
     private static $data_processor;
 
+    /**
+     * @return static
+     */
     protected static $instance;
     public static function get_instance() {
         if (!self::$instance instanceof static) {
