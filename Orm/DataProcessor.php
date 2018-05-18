@@ -117,10 +117,10 @@ class DataProcessor {
             $obj_arr = (array)$obj;
             unset($obj_arr['isLoaded']);
             $lastInsertId = $this->insert(array_keys($obj_arr), array_values($obj_arr));
-            if ($lastInsertId > 0) {
+            if (!isset($obj->$pk_column)) {
                 $obj->$pk_column = $lastInsertId;
-                $obj->isLoaded = true;
             }
+            $obj->isLoaded = true;
             return $lastInsertId;
         } elseif (!is_null($obj->$pk_column)) {
             //update
@@ -304,6 +304,8 @@ class DataProcessor {
 
         switch($type) {
             case 'INSERT':
+                $result = $pdo->lastInsertId();
+                break;
             case 'REPLACE':
                 $result = $pdo->lastInsertId();
                 if (!$result) {
