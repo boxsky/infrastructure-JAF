@@ -231,6 +231,39 @@ class Orm extends TestCase {
         $this->assertEquals($data, $dataNew);
     }
 
+    public function testWriteUpdateV2() {
+        $data = TestWrite::findByPk(1);
+        $obj = new TestWrite();
+        $obj->id = 1;
+        $obj->a = $data->a;
+        $obj->b = $data->b.'1';
+        $obj->c = $data->c + 1;
+        $obj->d = $data->d;
+        $obj->isLoaded = true;
+        $updateArr = [
+            'b' => $data->b.'1',
+            'c' => $data->c + 1
+        ];
+        $data->update($updateArr);
+        $data = TestWrite::findByPk(1);
+        $this->assertEquals($obj, $data);
+    }
+
+    public function testWriteUpdateWithLockV2() {
+        $data = TestWrite::findByPk(1);
+
+        $obj = clone($data);
+        $updateArr = [
+            'b' => $data->b.'1',
+            'c' => $data->c + 1
+        ];
+        $res = $obj->update($updateArr, ['d'=>'dddd']);
+        $this->assertEquals($res, 0);
+
+        $dataNew = TestWrite::findByPk(1);
+        $this->assertEquals($data, $dataNew);
+    }
+
     public function testWriteDelete() {
         $obj = new TestWrite();
         $obj->a = 1;

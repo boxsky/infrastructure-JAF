@@ -124,11 +124,22 @@ class DataProcessor {
             return $lastInsertId;
         } elseif (!is_null($obj->$pk_column)) {
             //update
-            $pk_id = $obj->$pk_column;
-            $obj_arr = (array)$obj;
-            unset($obj_arr['isLoaded']);
-            unset($obj_arr[$pk_column]);
-            return $this->update_by_pk(array_keys($obj_arr), array_values($obj_arr), $pk_id);
+            return $this->updateWithLock($obj, $locks=[]);
+        }
+    }
+
+    public function update(&$obj, $data, $locks) {
+        $pk_column = $this->pk_column;
+        if (isset($obj->isLoaded) && $obj->isLoaded && !is_null($obj->$pk_column)) {
+            $res = $this->update_by_pk(array_keys($data), array_values($data), $obj->$pk_column, $locks);
+            if ($res > 0) {
+                foreach ($data as $k => $v) {
+                    $obj->$k = $v;
+                }
+            }
+            return $res;
+        } else {
+            throw new FrameException(FrameException::ENUM_DB_UPDATE_PK_ERR);
         }
     }
 
