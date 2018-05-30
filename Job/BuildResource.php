@@ -88,7 +88,7 @@ class BuildResource extends ParentJob {
         //生成文件
         foreach ($resource_arr as $resource_type => $resources) {
             //创建合并后的文件所在的文件夹
-            $compressed_resource_dir = $this->dist_dir . DIRECTORY_SEPARATOR . $resource_type . DIRECTORY_SEPARATOR . str_replace($compressed_file_name, '', $compressed_file);
+            $compressed_resource_dir = $this->dist_dir . DIRECTORY_SEPARATOR . $resource_type . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, $compressed_file_info_arr) . DIRECTORY_SEPARATOR;
             if (!is_dir($compressed_resource_dir)) {
                 $mkdir_resource_res = mkdir($compressed_resource_dir, 0777, true);
                 if (!$mkdir_resource_res) {
