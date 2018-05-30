@@ -21,7 +21,7 @@ final class Router {
             $mappings_dynamic = jconfig('dynamic', 'route');
             if ($mappings_dynamic) {
                 foreach ($mappings_dynamic as $uri_preg => $controller_class) {
-                    if (preg_match('@'.$uri_preg.'@', $uri_preg, $matches)) {
+                    if (preg_match('@'.$uri_preg.'@', $uri, $matches)) {
                         $res = $controller_class;
                     }
                 }
