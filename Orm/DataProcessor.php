@@ -33,6 +33,8 @@ class DataProcessor {
 
     const LIMIT_MAX = 500;
 
+    const INSERT_FAIL_RESULT = 'fail';
+
     public function __construct($model_name) {
         $this->model_name = $model_name;
         $this->table = $model_name::get_table_name();
@@ -117,11 +119,16 @@ class DataProcessor {
             $obj_arr = (array)$obj;
             unset($obj_arr['isLoaded']);
             $lastInsertId = $this->insert(array_keys($obj_arr), array_values($obj_arr));
-            if (!isset($obj->$pk_column)) {
-                $obj->$pk_column = $lastInsertId;
+            if ($lastInsertId != self::INSERT_FAIL_RESULT) {
+                if (!isset($obj->$pk_column)) {
+                    $obj->$pk_column = $lastInsertId;
+                }
+                $obj->isLoaded = true;
+                $ret = $obj->$pk_column;
+            } else {
+                $ret = $lastInsertId;
             }
-            $obj->isLoaded = true;
-            return $lastInsertId;
+            return $ret;
         } elseif (!is_null($obj->$pk_column)) {
             //update
             return $this->updateWithLock($obj, $locks=[]);
@@ -316,6 +323,9 @@ class DataProcessor {
         switch($type) {
             case 'INSERT':
                 $result = $pdo->lastInsertId();
+                if (!$result && $stmt->rowCount() <= 0) {
+                    $result = self::INSERT_FAIL_RESULT;
+                }
                 break;
             case 'REPLACE':
                 $result = $pdo->lastInsertId();
