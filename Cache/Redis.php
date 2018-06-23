@@ -74,6 +74,10 @@ class Redis extends \Redis {
         return parent::ttl($this->rebuild_key($key));
     }
 
+    public function flushDB() {
+        return parent::flushDB();
+    }
+
     private function rebuild_key($key) {
         return $this->key_prefix.$key;
     }
