@@ -15,7 +15,6 @@ class Page {
         $this->set_data($data);
         $this->set_type($type);
         $this->set_cdn_prefix();
-        $this->set_default_version();
     }
 
     public function render() {
@@ -196,7 +195,7 @@ class Page {
     private function build_uri($resource) {
         $uri = $resource;
         if (defined('RELEASE_VERSION') && RELEASE_VERSION) {
-            $uri .= '?jaf_static_v='.RELEASE_VERSION;
+            $uri = '/jaf_static_v_'.RELEASE_VERSION.$uri;
         }
         return $uri;
     }
@@ -211,13 +210,5 @@ class Page {
 
     private function get_cdn_prefix() {
         return $this->cdn_prefix;
-    }
-
-    private function set_default_version() {
-        $this->default_version = defined('VERSION') ? VERSION : time();
-    }
-
-    private function get_default_version() {
-        return $this->default_version;
     }
 }
