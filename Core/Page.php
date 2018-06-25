@@ -173,7 +173,7 @@ class Page {
             if (preg_match('/:\/\//', $resource) || preg_match("#^//#", $resource)) {
                 return $resource;
             } else {
-                return $this->get_cdn_prefix().'dist/'.$this->build_uri($resource)."?v={$this->get_default_version()}";
+                return $this->get_cdn_prefix().'dist/'.$this->build_uri($resource);
             }
         }, $resources);
     }
