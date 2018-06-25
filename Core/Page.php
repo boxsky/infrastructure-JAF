@@ -181,7 +181,7 @@ class Page {
     private function get_compressed_resource_uris($resources, $ext) {
         $type = str_replace('.', '', $ext);
         if (ENV == 'production') {
-            return [$this->get_cdn_prefix().$this->build_uri($this->transform_page_name_to_file($this->get_page_name(), $ext, $type), 'c')."?v={$this->get_default_version()}"];
+            return [$this->get_cdn_prefix().$this->build_uri($this->transform_page_name_to_file($this->get_page_name(), $ext, $type), 'c')];
         } else {
             return array_map(function($resource) use($type) {
                 return $this->get_cdn_prefix().'source/'.$type.'/'.$this->build_uri($resource);
@@ -196,7 +196,7 @@ class Page {
     private function build_uri($resource) {
         $uri = $resource;
         if (defined('RELEASE_VERSION') && RELEASE_VERSION) {
-            $uri .= '?v='.RELEASE_VERSION;
+            $uri .= '?jaf_static_v='.RELEASE_VERSION;
         }
         return $uri;
     }
