@@ -195,7 +195,7 @@ class Page {
     private function build_uri($resource) {
         $uri = $resource;
         if (defined('RELEASE_VERSION') && RELEASE_VERSION) {
-            $uri = '/jaf_static_v_'.RELEASE_VERSION.$uri;
+            $uri = 'jaf_static_v_'.RELEASE_VERSION.'/'.$uri;
         }
         return $uri;
     }
