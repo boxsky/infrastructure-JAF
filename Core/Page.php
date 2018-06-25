@@ -8,13 +8,14 @@ class Page {
     private $title;
     private $page_class;
     private $cdn_prefix;
-    private $default_version;
+    private $dist_prefix;
 
     public function __construct($page_name, $data, $type='Page') {
         $this->set_page_name($page_name);
         $this->set_data($data);
         $this->set_type($type);
         $this->set_cdn_prefix();
+        $this->set_dist_prefix();
     }
 
     public function render() {
@@ -172,7 +173,7 @@ class Page {
             if (preg_match('/:\/\//', $resource) || preg_match("#^//#", $resource)) {
                 return $resource;
             } else {
-                return $this->get_cdn_prefix().'dist/'.$this->build_uri($resource);
+                return $this->get_dist_prefix().'dist/'.$resource;
             }
         }, $resources);
     }
@@ -210,5 +211,17 @@ class Page {
 
     private function get_cdn_prefix() {
         return $this->cdn_prefix;
+    }
+
+    private function set_dist_prefix() {
+        $request = APP::get_instance()->get_request();
+        $schema = (is_callable(array($request, 'is_secure')) && $request->is_secure()) ? 'https://' : 'http://';
+        $host = jconfig("dist_host", "resource");
+        $path = jconfig("dist_path", "resource");
+        $this->dist_prefix = $schema.$host.$path;
+    }
+
+    private function get_dist_prefix() {
+        return $this->dist_prefix;
     }
 }
