@@ -2,7 +2,7 @@
 namespace JAF\Orm;
 
 abstract class Model implements ModelInterface {
-    private static $data_processor;
+    protected static $data_processor;
 
     /**
      * @return static
@@ -165,7 +165,7 @@ abstract class Model implements ModelInterface {
         return true;
     }
 
-    private static function clearDataProcessor() {
+    protected static function clearDataProcessor() {
         self::$data_processor = null;
         self::$instance = null;
     }
