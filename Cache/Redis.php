@@ -83,10 +83,10 @@ class Redis extends \Redis {
     }
 
     private function rebuild_value($value) {
-        return serialize($value);
+        return is_numeric($value) ? $value : serialize($value);
     }
 
     private function format_value($value) {
-        return unserialize($value);
+        return is_numeric($value) ? $value : unserialize($value);
     }
 }
