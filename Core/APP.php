@@ -9,6 +9,9 @@ final class APP {
     private $response;
     private $shutdown_functions = [];
 
+    /**
+     * @return static
+     */
     public static function &get_instance() {
         if (!self::$instance) {
             self::$instance = new APP();

@@ -3,6 +3,10 @@ namespace JAF\Core;
 
 class Response {
     protected static $instance;
+
+    /**
+     * @return static
+     */
     public static function get_instance() {
         if(!self::$instance instanceof static) {
             self::$instance = new static();

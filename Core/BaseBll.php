@@ -13,7 +13,7 @@ class BaseBll {
     protected function __construct() {}
 
     /**
-     * 单例
+     * @return static
      */
     public static function get_instance() {
         if(!self::$instance instanceof static) {
