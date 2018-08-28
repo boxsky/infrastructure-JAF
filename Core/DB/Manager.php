@@ -15,6 +15,10 @@ class Manager {
         return self::$instance;
     }
 
+    /**
+     * @param $name
+     * @return PDO
+     */
     public function get_pdo($name) {
         if (!isset($this->pdo_list[$name])) {
             $this->pdo_list[$name] = $this->load_pdo($name);

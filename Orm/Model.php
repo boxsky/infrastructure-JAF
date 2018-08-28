@@ -105,6 +105,10 @@ abstract class Model implements ModelInterface {
         return $res;
     }
 
+    /**
+     * @param array ...$fields
+     * @return static
+     */
     public static function fields(...$fields) {
         if (is_null(self::$data_processor)) {
             self::$data_processor = new DataProcessor(get_called_class());
@@ -113,6 +117,12 @@ abstract class Model implements ModelInterface {
         return self::get_instance();
     }
 
+    /**
+     * @param $name
+     * @param $op
+     * @param $value
+     * @return static
+     */
     public static function where($name, $op, $value) {
         if (is_null(self::$data_processor)) {
             self::$data_processor = new DataProcessor(get_called_class());
@@ -121,6 +131,11 @@ abstract class Model implements ModelInterface {
         return self::get_instance();
     }
 
+    /**
+     * @param $whereRaw
+     * @param $values
+     * @return static
+     */
     public static function whereRaw($whereRaw, $values) {
         if (is_null(self::$data_processor)) {
             self::$data_processor = new DataProcessor(get_called_class());
@@ -129,6 +144,11 @@ abstract class Model implements ModelInterface {
         return self::get_instance();
     }
 
+    /**
+     * @param $field
+     * @param $type
+     * @return static
+     */
     public static function order($field, $type) {
         if (is_null(self::$data_processor)) {
             self::$data_processor = new DataProcessor(get_called_class());
@@ -137,6 +157,10 @@ abstract class Model implements ModelInterface {
         return self::get_instance();
     }
 
+    /**
+     * @param $offset
+     * @return static
+     */
     public static function offset($offset) {
         if (is_null(self::$data_processor)) {
             self::$data_processor = new DataProcessor(get_called_class());
@@ -145,6 +169,10 @@ abstract class Model implements ModelInterface {
         return self::get_instance();
     }
 
+    /**
+     * @param $limit
+     * @return static
+     */
     public static function limit($limit) {
         if (is_null(self::$data_processor)) {
             self::$data_processor = new DataProcessor(get_called_class());
@@ -153,6 +181,9 @@ abstract class Model implements ModelInterface {
         return self::get_instance();
     }
 
+    /**
+     * @return static
+     */
     public static function forceMaster() {
         if (is_null(self::$data_processor)) {
             self::$data_processor = new DataProcessor(get_called_class());
