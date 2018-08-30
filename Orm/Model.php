@@ -19,8 +19,15 @@ abstract class Model implements ModelInterface {
         if (is_null(self::$data_processor)) {
             self::$data_processor = new DataProcessor(get_called_class());
         }
-        $res = self::$data_processor->find();
-        self::clearDataProcessor();
+        $res = false;
+        try {
+            $res = self::$data_processor->find();
+        } catch (\Exception $e) {
+            throw $e;
+        } finally {
+            self::clearDataProcessor();
+        }
+
         return $res;
     }
 
@@ -28,8 +35,14 @@ abstract class Model implements ModelInterface {
         if (is_null(self::$data_processor)) {
             self::$data_processor = new DataProcessor(get_called_class());
         }
-        $res = self::$data_processor->find_row();
-        self::clearDataProcessor();
+        $res = false;
+        try {
+            $res = self::$data_processor->find_row();
+        } catch (\Exception $e) {
+            throw $e;
+        } finally {
+            self::clearDataProcessor();
+        }
         return $res;
     }
 
@@ -37,8 +50,14 @@ abstract class Model implements ModelInterface {
         if (is_null(self::$data_processor)) {
             self::$data_processor = new DataProcessor(get_called_class());
         }
-        $res = self::$data_processor->find_by_pk($pk);
-        self::clearDataProcessor();
+        $res = false;
+        try {
+            $res = self::$data_processor->find_by_pk($pk);
+        } catch (\Exception $e) {
+            throw $e;
+        } finally {
+            self::clearDataProcessor();
+        }
         return $res;
     }
 
@@ -46,8 +65,14 @@ abstract class Model implements ModelInterface {
         if (is_null(self::$data_processor)) {
             self::$data_processor = new DataProcessor(get_called_class());
         }
-        $res = self::$data_processor->find_by_pks($pks);
-        self::clearDataProcessor();
+        $res = false;
+        try {
+            $res = self::$data_processor->find_by_pks($pks);
+        } catch (\Exception $e) {
+            throw $e;
+        } finally {
+            self::clearDataProcessor();
+        }
         return $res;
     }
 
@@ -55,8 +80,14 @@ abstract class Model implements ModelInterface {
         if (is_null(self::$data_processor)) {
             self::$data_processor = new DataProcessor(get_called_class());
         }
-        $res = self::$data_processor->find_count();
-        self::clearDataProcessor();
+        $res = false;
+        try {
+            $res = self::$data_processor->find_count();
+        } catch (\Exception $e) {
+            throw $e;
+        } finally {
+            self::clearDataProcessor();
+        }
         return $res;
     }
 
@@ -64,8 +95,14 @@ abstract class Model implements ModelInterface {
         if (is_null(self::$data_processor)) {
             self::$data_processor = new DataProcessor(get_called_class());
         }
-        $res = self::$data_processor->find_sum($field);
-        self::clearDataProcessor();
+        $res = false;
+        try {
+            $res = self::$data_processor->find_sum($field);
+        } catch (\Exception $e) {
+            throw $e;
+        } finally {
+            self::clearDataProcessor();
+        }
         return $res;
     }
 
@@ -73,8 +110,14 @@ abstract class Model implements ModelInterface {
         if (is_null(self::$data_processor)) {
             self::$data_processor = new DataProcessor(get_called_class());
         }
-        $res = self::$data_processor->save($this);
-        self::clearDataProcessor();
+        $res = false;
+        try {
+            $res = self::$data_processor->save($this);
+        } catch (\Exception $e) {
+            throw $e;
+        } finally {
+            self::clearDataProcessor();
+        }
         return $res;
     }
 
@@ -82,8 +125,14 @@ abstract class Model implements ModelInterface {
         if (is_null(self::$data_processor)) {
             self::$data_processor = new DataProcessor(get_called_class());
         }
-        $res = self::$data_processor->updateWithLock($this, $locks);
-        self::clearDataProcessor();
+        $res = false;
+        try {
+            $res = self::$data_processor->updateWithLock($this, $locks);
+        } catch (\Exception $e) {
+            throw $e;
+        } finally {
+            self::clearDataProcessor();
+        }
         return $res;
     }
 
@@ -91,8 +140,14 @@ abstract class Model implements ModelInterface {
         if (is_null(self::$data_processor)) {
             self::$data_processor = new DataProcessor(get_called_class());
         }
-        $res = self::$data_processor->update($this, $data, $locks);
-        self::clearDataProcessor();
+        $res = false;
+        try {
+            $res = self::$data_processor->update($this, $data, $locks);
+        } catch (\Exception $e) {
+            throw $e;
+        } finally {
+            self::clearDataProcessor();
+        }
         return $res;
     }
 
@@ -100,8 +155,14 @@ abstract class Model implements ModelInterface {
         if (is_null(self::$data_processor)) {
             self::$data_processor = new DataProcessor(get_called_class());
         }
-        $res = self::$data_processor->delete($this);
-        self::clearDataProcessor();
+        $res = false;
+        try {
+            $res = self::$data_processor->delete($this);
+        } catch (\Exception $e) {
+            throw $e;
+        } finally {
+            self::clearDataProcessor();
+        }
         return $res;
     }
 

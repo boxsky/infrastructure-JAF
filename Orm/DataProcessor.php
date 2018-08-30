@@ -53,6 +53,10 @@ class DataProcessor {
         $this->enable_orm_pk_cache = $enable_global_orm_pk_cache && $enable_model_orm_pk_cache;
     }
 
+    public function set_table_suffix($table_suffix) {
+        $this->table .= $table_suffix;
+    }
+
     public function find() {
         $write_or_not = $this->force_master ? true : false;
         $fields = $this->get_fields();
@@ -118,12 +122,14 @@ class DataProcessor {
             //insert
             $obj_arr = (array)$obj;
             unset($obj_arr['isLoaded']);
+            unset($obj_arr['tableNameFinal']);
             $lastInsertId = $this->insert(array_keys($obj_arr), array_values($obj_arr));
             if ($lastInsertId != self::INSERT_FAIL_RESULT) {
                 if (!isset($obj->$pk_column)) {
                     $obj->$pk_column = $lastInsertId;
                 }
                 $obj->isLoaded = true;
+                $obj->tableNameFinal = $this->table;
                 $ret = $obj->$pk_column;
             } else {
                 $ret = $lastInsertId;
@@ -131,12 +137,18 @@ class DataProcessor {
             return $ret;
         } elseif (!is_null($obj->$pk_column)) {
             //update
+            if (isset($obj->tableNameFinal)) {
+                $this->table = $obj->tableNameFinal;
+            }
             return $this->updateWithLock($obj, $locks=[]);
         }
     }
 
     public function update(&$obj, $data, $locks) {
         $pk_column = $this->pk_column;
+        if (isset($obj->tableNameFinal)) {
+            $this->table = $obj->tableNameFinal;
+        }
         if (isset($obj->isLoaded) && $obj->isLoaded && !is_null($obj->$pk_column)) {
             $res = $this->update_by_pk(array_keys($data), array_values($data), $obj->$pk_column, $locks);
             if ($res > 0) {
@@ -153,9 +165,13 @@ class DataProcessor {
     public function updateWithLock($obj, $locks) {
         $pk_column = $this->pk_column;
         if (isset($obj->isLoaded) && $obj->isLoaded && !is_null($obj->$pk_column)) {
+            if (isset($obj->tableNameFinal)) {
+                $this->table = $obj->tableNameFinal;
+            }
             $pk_id = $obj->$pk_column;
             $obj_arr = (array)$obj;
             unset($obj_arr['isLoaded']);
+            unset($obj_arr['tableNameFinal']);
             unset($obj_arr[$pk_column]);
             return $this->update_by_pk(array_keys($obj_arr), array_values($obj_arr), $pk_id, $locks);
         }
@@ -190,6 +206,9 @@ class DataProcessor {
     public function delete(&$obj) {
         $pk_column = $this->pk_column;
         if (isset($obj->isLoaded) && $obj->isLoaded && !is_null($obj->$pk_column)) {
+            if (isset($obj->tableNameFinal)) {
+                $this->table = $obj->tableNameFinal;
+            }
             $write_or_not = true;
             $this->sql = "DELETE FROM `{$this->table}` WHERE `{$pk_column}`=?";
             $this->params = [$obj->$pk_column];
@@ -377,6 +396,7 @@ class DataProcessor {
                 $obj->$col = $val;
             }
             $obj->isLoaded = true;
+            $obj->tableNameFinal = $this->table;
             $objs[] = $obj;
         }
         return $objs;
