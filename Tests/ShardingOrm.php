@@ -73,7 +73,7 @@ class ShardingOrm extends TestCase {
             $r->id = $obj->id;
             $r->a = $obj->a;
             $r->isLoaded = $obj->isLoaded;
-            $r->tableNameFinal = 't_orm_read_sharding_1';
+            $r->tableSuffix = '1';
             return $r;
         }, $data);
         $this->assertEquals($rows, $data);
@@ -124,7 +124,7 @@ class ShardingOrm extends TestCase {
             $r->id = $obj->id;
             $r->a = $obj->a;
             $r->isLoaded =$obj->isLoaded;
-            $r->tableNameFinal =$obj->tableNameFinal;
+            $r->tableSuffix =$obj->tableSuffix;
             return $r;
         }, $data);
         $this->assertEquals($rows, $data);
@@ -217,7 +217,7 @@ class ShardingOrm extends TestCase {
         $obj->id = 1;
         $obj->a = $data->a.'1';
         $obj->isLoaded = true;
-        $obj->tableNameFinal = 't_orm_write_sharding_1';
+        $obj->tableSuffix = '1';
         $data->a = $data->a.'1';
         $data->save();
         $data = TestWriteSharding::set_table_suffix(1)
@@ -245,7 +245,7 @@ class ShardingOrm extends TestCase {
         $obj->id = 1;
         $obj->a = $data->a.'1';
         $obj->isLoaded = true;
-        $obj->tableNameFinal = 't_orm_write_sharding_1';
+        $obj->tableSuffix = '1';
         $updateArr = [
             'a' => $data->a.'1'
         ];
@@ -290,7 +290,6 @@ class ShardingOrm extends TestCase {
         $pdo = Manager::get_instance()->get_pdo('xhj_dev');
         $pdo->beginTransaction();
         $obj = new TestWriteSharding();
-        $obj->id = 3;
         $obj->a = 'aaaaaa';
         $id = $obj->save();
         $pdo->rollBack();
@@ -313,7 +312,7 @@ class ShardingOrm extends TestCase {
         $objNew->id = $id;
         $objNew->a = 'aaaaaaa';
         $objNew->isLoaded = true;
-        $objNew->tableNameFinal = 't_orm_write_sharding_1';
+        $objNew->tableSuffix = '1';
         $this->assertEquals($data, $objNew);
     }
 
@@ -322,13 +321,13 @@ class ShardingOrm extends TestCase {
         $obj1->id = 1;
         $obj1->a = 'a';
         $obj1->isLoaded = true;
-        $obj1->tableNameFinal = 't_orm_read_sharding_1';
+        $obj1->tableSuffix = '1';
 
         $obj3 = new TestReadSharding();
         $obj3->id = 3;
         $obj3->a = 'c';
         $obj3->isLoaded = true;
-        $obj3->tableNameFinal = 't_orm_read_sharding_1';
+        $obj3->tableSuffix = '1';
 
         return [
             'obj1' => $obj1,
@@ -341,13 +340,13 @@ class ShardingOrm extends TestCase {
         $obj2->id = 2;
         $obj2->a = 'b';
         $obj2->isLoaded = true;
-        $obj2->tableNameFinal = 't_orm_read_sharding_2';
+        $obj2->tableSuffix = '2';
 
         $obj4 = new TestReadSharding();
         $obj4->id = 4;
         $obj4->a = 'd';
         $obj4->isLoaded = true;
-        $obj4->tableNameFinal = 't_orm_read_sharding_2';
+        $obj4->tableSuffix = '2';
 
         return [
             'obj2' => $obj2,

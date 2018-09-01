@@ -1,9 +1,8 @@
 <?php
-namespace JAF\Orm;
+namespace JAF\Orm\V2;
 
 use JAF\Core\DB\Manager;
 use JAF\Exception\FrameException;
-use PHPUnit\Framework\Exception;
 
 class DataProcessor {
     private $model_name;
@@ -122,71 +121,54 @@ class DataProcessor {
         return $res['sum'];
     }
 
-    public function save(&$obj) {
+
+    public function insert(&$obj) {
         $pk_column = $this->pk_column;
-        if (!isset($obj->isLoaded) || !$obj->isLoaded) {
-            //insert
-            $obj_arr = (array)$obj;
-            unset($obj_arr['isLoaded']);
-            unset($obj_arr['tableSuffix']);
-            $lastInsertId = $this->insert(array_keys($obj_arr), array_values($obj_arr));
-            if ($lastInsertId != self::INSERT_FAIL_RESULT) {
-                if (!isset($obj->$pk_column)) {
-                    $obj->$pk_column = $lastInsertId;
-                }
-                $obj->isLoaded = true;
-                $obj->tableSuffix = $this->table_suffix;
-                $ret = $obj->$pk_column;
-            } else {
-                $ret = $lastInsertId;
+        $obj_arr = (array)$obj;
+        $lastInsertId = $this->insert_internal(array_keys($obj_arr), array_values($obj_arr));
+        if ($lastInsertId != self::INSERT_FAIL_RESULT) {
+            if (!isset($obj->$pk_column)) {
+                $obj->$pk_column = $lastInsertId;
             }
-            return $ret;
-        } elseif (!is_null($obj->$pk_column)) {
-            //update
-            if (isset($obj->tableSuffix)) {
-                $this->table_suffix = $obj->tableSuffix;
-                $this->table = $this->table_base . $obj->tableSuffix;
-            }
-            return $this->updateWithLock($obj, $locks=[]);
+            $obj->tableSuffix = $this->table_suffix;
         }
+        return $obj->$pk_column;
     }
 
     public function update(&$obj, $data, $locks) {
         $pk_column = $this->pk_column;
+        if (is_null($obj->$pk_column)) {
+            throw new FrameException(FrameException::ENUM_DB_UPDATE_PK_ERR);
+        }
         if (isset($obj->tableSuffix)) {
             $this->table_suffix = $obj->tableSuffix;
             $this->table = $this->table_base . $obj->tableSuffix;
         }
-        if (isset($obj->isLoaded) && $obj->isLoaded && !is_null($obj->$pk_column)) {
-            $res = $this->update_by_pk(array_keys($data), array_values($data), $obj->$pk_column, $locks);
-            if ($res > 0) {
-                foreach ($data as $k => $v) {
-                    $obj->$k = $v;
-                }
+        $res = $this->update_by_pk(array_keys($data), array_values($data), $obj->$pk_column, $locks);
+        if ($res > 0) {
+            foreach ($data as $k => $v) {
+                $obj->$k = $v;
             }
-            return $res;
-        } else {
-            throw new FrameException(FrameException::ENUM_DB_UPDATE_PK_ERR);
         }
+        return $res;
     }
 
-    public function updateWithLock($obj, $locks) {
+    public function delete(&$obj) {
         $pk_column = $this->pk_column;
-        if (isset($obj->isLoaded) && $obj->isLoaded && !is_null($obj->$pk_column)) {
-            if (isset($obj->tableSuffix)) {
-                $this->table_suffix = $obj->tableSuffix;
-                $this->table = $this->table_base . $obj->tableSuffix;
-            }
-            $pk_id = $obj->$pk_column;
-            $obj_arr = (array)$obj;
-            unset($obj_arr['isLoaded']);
-            unset($obj_arr['tableSuffix']);
-            unset($obj_arr[$pk_column]);
-            return $this->update_by_pk(array_keys($obj_arr), array_values($obj_arr), $pk_id, $locks);
+        if (is_null($obj->$pk_column)) {
+            throw new FrameException(FrameException::ENUM_DB_DELETE_PK_ERR);
         }
+        if (isset($obj->tableSuffix)) {
+            $this->table_suffix = $obj->tableSuffix;
+            $this->table = $this->table_base . $obj->tableSuffix;
+        }
+        $write_or_not = true;
+        $this->sql = "DELETE FROM `{$this->table}` WHERE `{$pk_column}`=?";
+        $this->params = [$obj->$pk_column];
+        return $this->execute_sql($this->sql, $this->params, $write_or_not);
     }
 
-    private function insert($fields, $values) {
+    private function insert_internal($fields, $values) {
         $write_or_not = true;
         $fields_str = "`".implode("`,`", $fields)."`";
         $values_str = str_repeat('?,', count($values) - 1).'?';
@@ -210,24 +192,6 @@ class DataProcessor {
         }
         $this->params = array_merge($values,[$pk_id], $lock_values);
         return $this->execute_sql($this->sql, $this->params, $write_or_not);
-    }
-
-    public function delete(&$obj) {
-        $pk_column = $this->pk_column;
-        if (isset($obj->isLoaded) && $obj->isLoaded && !is_null($obj->$pk_column)) {
-            if (isset($obj->tableSuffix)) {
-                $this->table_suffix = $obj->tableSuffix;
-                $this->table = $this->table_base . $obj->tableSuffix;
-            }
-            $write_or_not = true;
-            $this->sql = "DELETE FROM `{$this->table}` WHERE `{$pk_column}`=?";
-            $this->params = [$obj->$pk_column];
-            $res = $this->execute_sql($this->sql, $this->params, $write_or_not);
-            if ($res) {
-                $obj->isLoaded = false;
-            }
-            return $res;
-        }
     }
 
     public function set_fields($fields) {
@@ -405,7 +369,6 @@ class DataProcessor {
                 }
                 $obj->$col = $val;
             }
-            $obj->isLoaded = true;
             $obj->tableSuffix = $this->table_suffix;
             $objs[] = $obj;
         }

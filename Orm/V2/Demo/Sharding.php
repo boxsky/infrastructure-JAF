@@ -1,11 +1,9 @@
 <?php
-namespace JAF\Orm\Demo;
+namespace JAF\Orm\V2\Demo;
 
-use JAF\Orm\ShardingModel;
+use JAF\Orm\V2\ShardingModel;
 
-class TestWriteSharding extends ShardingModel  {
-    const MOD_NUM = 2;
-
+class Sharding extends ShardingModel  {
     public static function get_write_db_config() {
         return 'xhj_dev';
     }
@@ -15,7 +13,7 @@ class TestWriteSharding extends ShardingModel  {
     }
 
     public static function get_table_name() {
-        return 't_orm_write_sharding_';
+        return 't_orm_sharding_';
     }
 
     public static function get_table_pk() {
@@ -23,7 +21,7 @@ class TestWriteSharding extends ShardingModel  {
     }
 
     public function table_suffix_route($params) {
-        $mod_num = self::MOD_NUM;
+        $mod_num = 2;
         $res = $params['id'] % $mod_num;
         return $res == 0 ? $mod_num : $res;
     }

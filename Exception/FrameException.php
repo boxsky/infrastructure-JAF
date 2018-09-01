@@ -21,6 +21,7 @@ class FrameException extends \Exception {
     const ENUM_DB_CONFIG_ERR           = 100201;
     const ENUM_DB_EXEC_ERR             = 100202;
     const ENUM_DB_UPDATE_PK_ERR        = 100203;
+    const ENUM_DB_DELETE_PK_ERR        = 100204;
 
     /**
      * redis异常

@@ -67,7 +67,7 @@ class Orm extends TestCase {
             $r->c = $obj->c;
             $r->d = $obj->d;
             $r->isLoaded =$obj->isLoaded;
-            $r->tableNameFinal = 't_orm_read';
+            $r->tableSuffix = '';
             return $r;
         }, $data);
         $this->assertEquals($rows, $data);
@@ -120,7 +120,7 @@ class Orm extends TestCase {
             $r->c = $obj->c;
             $r->d = $obj->d;
             $r->isLoaded =$obj->isLoaded;
-            $r->tableNameFinal = 't_orm_read';
+            $r->tableSuffix = '';
             return $r;
         }, $data);
         $this->assertEquals($rows, $data);
@@ -211,7 +211,7 @@ class Orm extends TestCase {
         $obj->c = $data->c + 1;
         $obj->d = $data->d;
         $obj->isLoaded = true;
-        $obj->tableNameFinal = 't_orm_write';
+        $obj->tableSuffix = '';
         $data->b = $data->b.'1';
         $data->c = $data->c + 1;
         $data->save();
@@ -243,7 +243,7 @@ class Orm extends TestCase {
         $obj->c = $data->c + 1;
         $obj->d = $data->d;
         $obj->isLoaded = true;
-        $obj->tableNameFinal = 't_orm_write';
+        $obj->tableSuffix = '';
         $updateArr = [
             'b' => $data->b.'1',
             'c' => $data->c + 1
@@ -325,7 +325,7 @@ class Orm extends TestCase {
         $objNew->c = 3;
         $objNew->d = 'ddd';
         $objNew->isLoaded = true;
-        $objNew->tableNameFinal = 't_orm_write';
+        $objNew->tableSuffix = '';
         $this->assertEquals($data, $objNew);
     }
 
@@ -337,7 +337,7 @@ class Orm extends TestCase {
         $obj1->c = 1;
         $obj1->d = 'dz';
         $obj1->isLoaded = true;
-        $obj1->tableNameFinal = 't_orm_read';
+        $obj1->tableSuffix = '';
 
         $obj2 = new TestRead();
         $obj2->id = 2;
@@ -346,7 +346,7 @@ class Orm extends TestCase {
         $obj2->c = 2;
         $obj2->d = 'dy';
         $obj2->isLoaded = true;
-        $obj2->tableNameFinal = 't_orm_read';
+        $obj2->tableSuffix = '';
 
         $obj3 = new TestRead();
         $obj3->id = 3;
@@ -355,7 +355,7 @@ class Orm extends TestCase {
         $obj3->c = 3;
         $obj3->d = 'dx';
         $obj3->isLoaded = true;
-        $obj3->tableNameFinal = 't_orm_read';
+        $obj3->tableSuffix = '';
 
         $obj4 = new TestRead();
         $obj4->id = 4;
@@ -364,7 +364,7 @@ class Orm extends TestCase {
         $obj4->c = 4;
         $obj4->d = 'dy';
         $obj4->isLoaded = true;
-        $obj4->tableNameFinal = 't_orm_read';
+        $obj4->tableSuffix = '';
 
         return [
             'obj1' => $obj1,

@@ -1,5 +1,5 @@
 <?php
-namespace JAF\Orm;
+namespace JAF\Orm\V2;
 
 abstract class Model implements ModelInterface {
     protected static $data_processor;
@@ -106,41 +106,6 @@ abstract class Model implements ModelInterface {
         return $res;
     }
 
-    /**
-     * @deprecated
-     */
-    public function save() {
-        if (is_null(self::$data_processor)) {
-            self::$data_processor = new DataProcessor(get_called_class());
-        }
-        $res = false;
-        try {
-            $res = self::$data_processor->save($this);
-        } catch (\Exception $e) {
-            throw $e;
-        } finally {
-            self::clearDataProcessor();
-        }
-        return $res;
-    }
-
-    /**
-     * @deprecated
-     */
-    public function saveWithLock($locks) {
-        if (is_null(self::$data_processor)) {
-            self::$data_processor = new DataProcessor(get_called_class());
-        }
-        $res = false;
-        try {
-            $res = self::$data_processor->updateWithLock($this, $locks);
-        } catch (\Exception $e) {
-            throw $e;
-        } finally {
-            self::clearDataProcessor();
-        }
-        return $res;
-    }
 
     public function insert() {
         if (is_null(self::$data_processor)) {
@@ -148,7 +113,7 @@ abstract class Model implements ModelInterface {
         }
         $res = false;
         try {
-            $res = self::$data_processor->save($this);
+            $res = self::$data_processor->insert($this);
         } catch (\Exception $e) {
             throw $e;
         } finally {
