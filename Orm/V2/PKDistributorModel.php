@@ -7,8 +7,10 @@ abstract class PKDistributorModel implements PKDistributorInterface {
     public static function distribute() {
         $model_class = get_called_class();
         $stub = $model_class::stub();
-        $stub_field = array_pop(array_keys($stub));
-        $stub_value = array_pop(array_values($stub));
+        $stub_keys = array_keys($stub);
+        $stub_values = array_values($stub);
+        $stub_field = array_pop($stub_keys);
+        $stub_value = array_pop($stub_values);
         if (is_null(self::$data_processor)) {
             self::$data_processor = new DataProcessor($model_class);
         }
