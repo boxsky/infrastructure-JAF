@@ -10,7 +10,7 @@ class Redis extends \Redis {
     const ENUM_CONNECT_MODE_REQUEST = 1;
     const ENUM_CONNECT_MODE_PROCESS = 2;
 
-    public function __construct($name, $connect_mode=self::ENUM_CONNECT_MODE_REQUEST) {
+    public function __construct($name, $connect_mode=self::ENUM_CONNECT_MODE_REQUEST, $select_db=true) {
         parent::__construct();
         $this->key_prefix = 'JAF:'.APP_NAME.':';
         $redis_config = jconfig($name, 'redis');
@@ -36,8 +36,9 @@ class Redis extends \Redis {
                 throw new FrameException(FrameException::ENUM_REDIS_AUTH_FAIL);
             }
         }
-        if (!empty($redis_config['database'])) {
-            $this->select($redis_config['database']);
+        if ($select_db) {
+            $database = isset($redis_config['database']) ? intval($redis_config['database']) : 0;
+            $this->select($database);
         }
     }
 
